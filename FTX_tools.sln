@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Position_Fetcher", "Position_Fetcher\Position_Fetcher.csproj", "{988BF810-9479-4601-8CC1-6A2E92F5A921}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{988BF810-9479-4601-8CC1-6A2E92F5A921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{988BF810-9479-4601-8CC1-6A2E92F5A921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{988BF810-9479-4601-8CC1-6A2E92F5A921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{988BF810-9479-4601-8CC1-6A2E92F5A921}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B733927-3F1D-4363-A75A-DA62AE80D682}
+	EndGlobalSection
+EndGlobal
