@@ -15,6 +15,8 @@ namespace Position_Fetcher
     {
         public static readonly string BALANCE = "wallet/balances";
         public static readonly string POSITION = "positions";
+        public static readonly string LEVERAGED_BALANCES = "lt/balances";
+        public static readonly string ALL_BALANCES = "wallet/all_balances";
     }
 
     class Program
@@ -39,6 +41,8 @@ namespace Position_Fetcher
                     {
                         FetchData(client, Endpoint.POSITION);
                         FetchData(client, Endpoint.BALANCE);
+                        //FetchData(client, Endpoint.LEVERAGED_BALANCES);
+                        //FetchData(client, Endpoint.ALL_BALANCES);
 
                         Thread.Sleep(10 * 1000);
                     }
@@ -68,6 +72,14 @@ namespace Position_Fetcher
                 else if (objective == Endpoint.BALANCE)
                 {
                     ParseAndWriteBalancesToCsv(response);
+                }
+                else if (objective == Endpoint.ALL_BALANCES)
+                {
+                    ParseAndWriteAllBalancesToCsv(response);
+                }
+                else if (objective == Endpoint.LEVERAGED_BALANCES)
+                {
+                    ParseAndWriteLeveragedBalancesToCsv(response);
                 }
             }
             catch (Exception ex)
@@ -113,9 +125,14 @@ namespace Position_Fetcher
                 using (StreamWriter writer = new("positions.csv"))
                 {
                     writer.WriteLine($"Name,Size,Side,Net Size,Long Order Size,Short Order Size,Cost,Entry Price,Unrealised PNL,Realised PNL,Initial Margin Requirement,Maintenance Margin Requirement,Open Size,Collateral Used,Estimated Liquidation Price,Time");
+                    if (positions.result is null)
+                    {
+                        Console.WriteLine("No positions to write.");
+                        return;
+                    }
                     foreach (var item in positions.result)
                     {
-                        if (item.size > 0)
+                        if (item.size != 0)
                         {
                             string output = "";
                             foreach (var itemB in DictionaryFromType(item))
@@ -149,9 +166,14 @@ namespace Position_Fetcher
                 using (StreamWriter writer = new("balances.csv"))
                 {
                     writer.WriteLine($"Name,Free,Spot Borrow,Total,USD Value,Available Without Borrow");
+                    if (balances.result is null)
+                    {
+                        Console.WriteLine("No balances to write.");
+                        return;
+                    }
                     foreach (var item in balances.result)
                     {
-                        if (item.total > 0)
+                        if (item.total != 0)
                         {
                             string output = "";
                             foreach (var itemB in DictionaryFromType(item))
@@ -172,6 +194,88 @@ namespace Position_Fetcher
             }
 
         }
+
+        public static async void ParseAndWriteAllBalancesToCsv(HttpResponseMessage response)
+        {
+            try
+            {
+
+                var balances = JsonSerializer.Deserialize<RootobjectAllBalances>(await response.Content.ReadAsStringAsync());
+
+                Console.WriteLine("\n####\n");
+                using (StreamWriter writer = new("allBalances.csv"))
+                {
+                    writer.WriteLine($"Name,Free,Spot Borrow,Total,USD Value,Available Without Borrow");
+                    if (balances.result is null)
+                    {
+                        Console.WriteLine("No AllBalances to write.");
+                        return;
+                    }
+                    foreach (var item in balances.result.main)
+                    {
+                        if (item.total != 0)
+                        {
+                            string output = "";
+                            foreach (var itemB in DictionaryFromType(item))
+                            {
+                                output += itemB.Value + ",";
+                            }
+                            writer.WriteLine(output);
+
+                            Console.WriteLine(output);
+                        }
+                    }
+                }
+                Console.WriteLine("\n####\n" + await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Threw exception in ParseAndWriteBalancesToCsv: " + ex.StackTrace);
+            }
+
+        }
+
+
+        public static async void ParseAndWriteLeveragedBalancesToCsv(HttpResponseMessage response)
+        {
+            try
+            {
+
+                var balances = JsonSerializer.Deserialize<RootobjectLeveragedBalance>(await response.Content.ReadAsStringAsync());
+
+                Console.WriteLine("\n####\n");
+                using (StreamWriter writer = new("LeveragedBalances.csv"))
+                {
+                    writer.WriteLine($"Token,Balance");
+                    if (balances.result is null)
+                    {
+                        Console.WriteLine("No leveraged balances to write.");
+                        return;
+                    }
+                    foreach (var item in balances.result)
+                    {
+                        if (item.balance != 0)
+                        {
+                            string output = "";
+                            foreach (var itemB in DictionaryFromType(item))
+                            {
+                                output += itemB.Value + ",";
+                            }
+                            writer.WriteLine(output);
+
+                            Console.WriteLine(output);
+                        }
+                    }
+                }
+                Console.WriteLine("\n####\n" + await response.Content.ReadAsStringAsync());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Threw exception in ParseAndWriteLeveragedBalancesToCsv: " + ex.StackTrace);
+            }
+
+        }
+
 
         public static Dictionary<string, object> DictionaryFromType(object atype)
         {

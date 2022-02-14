@@ -39,3 +39,49 @@ public class Balance
     public float availableWithoutBorrow { get; set; }
 }
 
+
+public class RootobjectLeveragedBalance
+{
+    public bool success { get; set; }
+    public LeveragedBalance[] result { get; set; }
+}
+
+public class LeveragedBalance
+{
+    public string token { get; set; }
+    public float balance { get; set; }
+}
+
+
+public class RootobjectAllBalances
+{
+    public bool success { get; set; }
+    public AllBalances result { get; set; }
+}
+
+public class AllBalances
+{
+    public Main[] main { get; set; }
+    public BattleRoyale[] BattleRoyale { get; set; }
+}
+
+public class Main
+{
+    public string coin { get; set; }
+    public float free { get; set; }
+    public float spotBorrow { get; set; }
+    public float total { get; set; }
+    public float usdValue { get; set; }
+    public float availableWithoutBorrow { get; set; }
+}
+
+public class BattleRoyale
+{
+    public string coin { get; set; }
+    public float free { get; set; }
+    public float spotBorrow { get; set; }
+    public float total { get; set; }
+    public float usdValue { get; set; }
+    public float availableWithoutBorrow { get; set; }
+}
+
